@@ -17,7 +17,7 @@ h1{font-size:clamp(28px,5vw,48px);line-height:1.08;margin:0 0 12px}h2{font-size:
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.section{background:#ffffffd9;border:1px solid white;border-radius:26px;padding:22px;margin:18px 0;box-shadow:var(--shadow)}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.island{border:2px solid white;border-radius:22px;background:linear-gradient(145deg,#fff,#eef7ff);padding:18px;text-align:left;box-shadow:var(--shadow);min-height:145px;display:flex;gap:14px;align-items:center;transition:.15s}.island:hover{transform:translateY(-2px)}.island .emoji{font-size:42px}.island strong{display:block;font-size:18px}.island small{color:#71809c}.locked{opacity:.7}.progress{height:9px;border-radius:20px;background:#e7edf5;overflow:hidden;margin-top:9px}.progress i{display:block;height:100%;background:#78c99a;border-radius:20px}
 .hidden{display:none!important}.back{margin-bottom:14px}.gamehead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.track{height:10px;background:#e8edf5;border-radius:20px;overflow:hidden;margin:12px 0}.track i{display:block;height:100%;background:#75c99a}
-.problem{background:linear-gradient(135deg,#fff7fb,#f1f7ff);border:2px solid white;border-radius:24px;padding:clamp(22px,5vw,44px);text-align:center;margin:18px 0}.equation{font-size:clamp(36px,8vw,62px);font-weight:950;letter-spacing:1px;margin:12px 0 22px}.options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:600px;margin:0 auto}.option{background:white;border:2px solid #e2eafa;border-radius:18px;padding:16px;font-size:28px;font-weight:950;box-shadow:0 4px 0 #dfe7f2}.option.selected{border-color:#e98ab4;background:#fff0f6}.option.correct{border-color:#7bc99b;background:#e7f8ed}.option.wrong{border-color:#e9a0a0;background:#fff0f0}
+.problem{background:linear-gradient(135deg,#fff7fb,#f1f7ff);border:2px solid white;border-radius:24px;padding:clamp(22px,5vw,44px);text-align:center;margin:18px 0}.equation{font-size:clamp(36px,8vw,62px);font-weight:950;letter-spacing:1px;margin:12px 0 22px}.options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:680px;margin:0 auto}.option{background:white;border:2px solid #e2eafa;border-radius:18px;padding:16px;font-size:28px;font-weight:950;box-shadow:0 4px 0 #dfe7f2}.option.selected{border-color:#e98ab4;background:#fff0f6}.option.correct{border-color:#7bc99b;background:#e7f8ed}.option.wrong{border-color:#e9a0a0;background:#fff0f0}
 .feedback{border-radius:18px;padding:15px;margin-top:18px;background:#eff8f1;font-weight:750}.feedback.bad{background:#fff3e8}.hint{background:#fff8e7;border:1px solid #f5e7c4;border-radius:18px;padding:14px;margin-top:14px;text-align:left}
 .footer{text-align:center;color:#8290a8;font-size:13px;padding:25px}.badge{display:inline-block;border-radius:99px;padding:6px 11px;background:var(--pink2);font-weight:800;font-size:13px}.menu{display:flex;gap:8px;flex-wrap:wrap}.menu button{background:white;border:1px solid var(--line);border-radius:14px;padding:10px 13px;font-weight:800}
 .parentrow{display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
@@ -403,6 +403,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 #game .options{grid-template-columns:repeat(2,minmax(0,1fr))}
 #game .equation{white-space:pre-line;line-height:1.35}
 @media(max-width:700px){#game .options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.options{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 
 <link rel="icon" type="image/png" sizes="512x512" href="app-icon.png">
@@ -526,14 +527,24 @@ function buildEquations(){
 }
 function buildCounting(){
   const items=[];
-  const groups=["🍎","⭐","🐠","🦋","🍓","🌼","🚗","🎈","🐥","🍐"];
-  for(let i=0;i<100;i++){
-    const n=i<50 ? 1+(i%10) : 11+(i%10);
-    const emoji=groups[i%groups.length];
-    const row=Array.from({length:n},()=>emoji).join(" ");
-    items.push([row+"\\nНеше зат бар?",n]);
+  const groups=["✏️","🍎","⭐","🐠","🦋","🍓","🌼","🚗","🎈","🐥"];
+  // 50 жеке заттарды санау тапсырмасы, аралас ретпен.
+  for(let i=0;i<50;i++){
+    const n=1+(i%10);
+    const emoji=groups[(i*7+3)%groups.length];
+    items.push([Array.from({length:n},()=>emoji).join(" "),n]);
   }
-  return makeQuestions(items);
+  // 50 суретті қосу тапсырмасы: заттар + заттар.
+  for(let i=0;i<50;i++){
+    const a=1+((i*3+1)%10);
+    const b=1+((i*7+2)%10);
+    const first=groups[(i*3)%groups.length];
+    const second=groups[(i*5+4)%groups.length];
+    const left=Array.from({length:a},()=>first).join(" ");
+    const right=Array.from({length:b},()=>second).join(" ");
+    items.push([left+"  +  "+right,a+b]);
+  }
+  return makeQuestions(shuffleQuestions(items,78231));
 }
 const topics=[
 {name:"Қосу аралы",icon:"➕",desc:"50 есеп (1–10) + 50 есеп (бір және екі таңбалы сандар)",instruction:"Алғашқы 50 есепте сандар 1–10 аралығында, келесі 50 есепте бір және екі таңбалы сандар араласады.",qs:buildAddition()},
@@ -550,14 +561,6 @@ let topicIndex=0,qIndex=0,correctCount=0,answered=false;
 let playerName="";try{playerName=localStorage.getItem("mathWorldPlayerName")||"";}catch(e){playerName="";}
 
 function playAnswerSound(isCorrect){
- try{
-  if("speechSynthesis" in window){
-    window.speechSynthesis.cancel();
-    const utterance=new SpeechSynthesisUtterance(isCorrect?"Дұрыс! Жарайсың!":"Дұрыс емес. Қайта байқап көр!");
-    utterance.lang="kk-KZ"; utterance.rate=0.9; utterance.pitch=isCorrect?1.15:0.85;
-    window.speechSynthesis.speak(utterance);
-  }
- }catch(e){}
  try{
   const AudioCtx=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtx)return;
@@ -635,7 +638,7 @@ function renderQuestion(){
  answered=false;let t=topics[topicIndex],q=t.qs[qIndex];
  document.getElementById("topicbadge").textContent=t.name;
  document.getElementById("leveltitle").textContent=Math.floor(qIndex/10)+1+"-кезең · "+(qIndex%10+1)+"/10";
- document.getElementById("instruction").textContent=t.instruction;
+ document.getElementById("instruction").textContent=t.name==="Санау аралы"?"":t.instruction;
  const equation=document.getElementById("equation");
  equation.textContent=t.name==="Қарапайым теңдеулер аралы"||t.name==="Санау аралы"?q[0]:q[0]+" = ?";
  equation.style.whiteSpace="pre-line";
