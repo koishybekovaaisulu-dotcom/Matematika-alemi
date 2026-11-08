@@ -2,7 +2,7 @@
 <html lang="kk">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Математика әлемі — бірге үйренейік!</title>
+<title>Zere — Математика аралы</title>
 <style>
 :root{--ink:#24345d;--pink:#f4a9c9;--pink2:#ffe5f0;--blue:#e9f4ff;--sky:#dff2ff;--green:#dff4df;--gold:#ffd66b;--cream:#fff8e9;--line:#dce8f6;--shadow:0 12px 28px #526c8c1c}
 *{box-sizing:border-box}body{margin:0;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:linear-gradient(180deg,#eaf6ff,#f8fbff 50%,#eff8ed);min-height:100vh}
@@ -411,17 +411,22 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 <meta name="theme-color" content="#eaf4ff">
 </head>
 <body><div class="wrap">
-<header class="top"><div class="brand">Математика <span>әлемі</span></div><div class="stats"><div class="pill">⭐ <b id="stars">0</b></div><div class="pill">🪙 <b id="coins">0</b></div><div class="pill" id="player">👧 Досым · 1-сынып</div></div></header>
+<header class="top"><div class="brand">Zere <span>Математика аралы</span></div><div class="stats"><div class="pill">⭐ <b id="stars">0</b></div><div class="pill">🪙 <b id="coins">0</b></div><div class="pill" id="player">👧 Досым · 1-сынып</div></div></header>
 <main id="home" class="home-design">
-<section class="welcome-panel"><div class="welcome-copy"><div class="eyebrow">✨ 1-СЫНЫПҚА АРНАЛҒАН ОЙЫН</div><h1>Математика <span>әлемі</span></h1><p>Сәлем, досым! Қай аралға саяхаттаймыз?</p></div>
+<section class="welcome-panel"><div class="welcome-copy"><div class="eyebrow">✨ 1-СЫНЫПҚА АРНАЛҒАН ОЙЫН</div><h1>Zere — <span>Математика аралы</span></h1><p>Сәлем, досым! Қай аралға саяхаттаймыз?</p></div>
 <div class="player-editor"><div class="avatar">👧</div><div class="player-edit-fields"><label for="childName">Баланың аты</label><div class="name-row"><input id="childName" maxlength="18" placeholder="Атыңды жаз..." autocomplete="off"><button class="save-name-btn" onclick="savePlayerName()">Сақтау</button></div><small>Атың барлық бетте сақталады</small></div></div></section>
-<section class="island-section"><div class="section-heading"><div><h2>Сиқырлы аралдар</h2><p>Аралды таңда да, 10 кезеңнен өт!</p></div></div>
+<section class="island-section">
+<div class="section-heading"><div><h2>0-сынып</h2><p>Сандармен танысып, санауды үйрен!</p></div></div>
+<div class="island-grid">
+<button class="island-card island-count-card" onclick="chooseLevels(4)"><span class="island-symbol">🔢</span><strong>Санамақ аралы</strong><small>100 тапсырма · 10 кезең</small><span class="island-progress" id="progress4">0/100 ⭐</span></button>
+</div></section>
+<section class="island-section">
+<div class="section-heading"><div><h2>1-сынып</h2><p>Аралды таңда да, 10 кезеңнен өт!</p></div></div>
 <div class="island-grid">
 <button class="island-card island-add-card" onclick="chooseLevels(0)"><span class="island-symbol">＋</span><strong>Қосу аралы</strong><small>100 есеп · 10 кезең</small><span class="island-progress" id="progress0">0/100 ⭐</span></button>
 <button class="island-card island-sub-card" onclick="chooseLevels(1)"><span class="island-symbol">−</span><strong>Азайту аралы</strong><small>100 есеп · 10 кезең</small><span class="island-progress" id="progress1">0/100 ⭐</span></button>
 <button class="island-card island-bracket-card" onclick="chooseLevels(2)"><span class="island-symbol">( )</span><strong>Жақшалы есептер аралы</strong><small>100 есеп · 10 кезең</small><span class="island-progress" id="progress2">0/100 ⭐</span></button>
 <button class="island-card island-equation-card" onclick="chooseLevels(3)"><span class="island-symbol">x =</span><strong>Теңдеулер аралы</strong><small>100 есеп · 10 кезең</small><span class="island-progress" id="progress3">0/100 ⭐</span></button>
-<button class="island-card island-count-card" onclick="chooseLevels(4)"><span class="island-symbol">🔢</span><strong>Санау аралы</strong><small>100 тапсырма · 10 кезең</small><span class="island-progress" id="progress4">0/100 ⭐</span></button>
 </div></section>
 <section class="home-bottom"><div class="daily-box"><h3>🌟 Бүгінгі мақсат</h3><p>5 тапсырма орында!</p><div class="track"><i id="dailybar" style="width:0%"></i></div><b id="dailytext">0 / 5 тапсырма</b></div></section>
 <nav class="bottom-nav"><button onclick="show('home')">🏠 Басты бет</button><button onclick="show('achievements')">🏆 Жетістіктер</button><button onclick="show('parent')">📊 Үлгерімім</button></nav></main>
@@ -430,7 +435,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 <main id="result" class="hidden"><section class="section" style="text-align:center"><div style="font-size:70px">🏆</div><h1>Жарайсың!</h1><h2 id="resultscore">10/10</h2><p id="resulttext">Сен керемет жұмыс жасадың!</p><div class="actions" style="justify-content:center"><button class="primary" onclick="show('map')">Картаға оралу</button><button class="secondary" onclick="replay()">Қайта ойнау</button></div></section></main>
 <main id="parent" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section"><h2>👨‍👩‍👧 Ата-ана кабинеті</h2><p class="muted">Бұл демо-нұсқадағы үлгерім осы құрылғыда сақталады.</p><div class="parentrow"><span>Орындалған тапсырмалар</span><b id="parentdone">0</b></div><div class="parentrow"><span>Жиналған жұлдыздар</span><b id="parentstars">0</b></div><div class="parentrow"><span>Жиналған монеталар</span><b id="parentcoins">0</b></div><div class="parentrow"><span>Аяқталған аралдар</span><b id="parentislands">0</b></div><p class="muted">Кеңес: баламен күніне 10–15 минут ойнау жеткілікті. Нәтижені мадақтап, қателесуге мүмкіндік беріңіз.</p></section></main>
 <main id="achievements" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section"><h2>🏅 Жетістіктер</h2><p id="achievementslist">Алғашқы жұлдызыңды жина!</p></section></main>
-<footer class="footer">Математика әлемі · Оқу — қызықты саяхат! 🌈</footer>
+<footer class="footer">Zere — Математика аралы · Оқу — қызықты саяхат! 🌈</footer>
 </div>
 <script>
 
@@ -560,24 +565,27 @@ data={stars:Number(data.stars)||0,coins:Number(data.coins)||0,done:Number(data.d
 let topicIndex=0,qIndex=0,correctCount=0,answered=false;
 let playerName="";try{playerName=localStorage.getItem("mathWorldPlayerName")||"";}catch(e){playerName="";}
 
-function playAnswerSound(isCorrect){
+async function playAnswerSound(isCorrect){
+ let ctx;
  try{
   const AudioCtx=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtx)return;
-  const ctx=new AudioCtx(),now=ctx.currentTime;
+  ctx=new AudioCtx();
+  if(ctx.state==='suspended') await ctx.resume();
+  const now=ctx.currentTime;
   const osc=ctx.createOscillator(),gain=ctx.createGain();
   osc.connect(gain);gain.connect(ctx.destination);
   if(isCorrect){
-   osc.type="sine";osc.frequency.setValueAtTime(660,now);osc.frequency.exponentialRampToValueAtTime(990,now+0.16);
-   gain.gain.setValueAtTime(0.0001,now);gain.gain.exponentialRampToValueAtTime(0.22,now+0.025);gain.gain.exponentialRampToValueAtTime(0.0001,now+0.34);
-   osc.start(now);osc.stop(now+0.35);
+   osc.type='sine';osc.frequency.setValueAtTime(740,now);osc.frequency.setValueAtTime(988,now+0.11);
+   gain.gain.setValueAtTime(0.0001,now);gain.gain.linearRampToValueAtTime(0.20,now+0.02);gain.gain.exponentialRampToValueAtTime(0.0001,now+0.28);
+   osc.start(now);osc.stop(now+0.29);
   }else{
-   osc.type="triangle";osc.frequency.setValueAtTime(260,now);osc.frequency.exponentialRampToValueAtTime(165,now+0.22);
-   gain.gain.setValueAtTime(0.0001,now);gain.gain.exponentialRampToValueAtTime(0.16,now+0.02);gain.gain.exponentialRampToValueAtTime(0.0001,now+0.27);
-   osc.start(now);osc.stop(now+0.28);
+   osc.type='triangle';osc.frequency.setValueAtTime(280,now);osc.frequency.setValueAtTime(190,now+0.13);
+   gain.gain.setValueAtTime(0.0001,now);gain.gain.linearRampToValueAtTime(0.17,now+0.02);gain.gain.exponentialRampToValueAtTime(0.0001,now+0.25);
+   osc.start(now);osc.stop(now+0.26);
   }
   osc.onended=()=>ctx.close();
- }catch(e){}
+ }catch(e){if(ctx)try{ctx.close()}catch(_){} }
 }
 
 function savePlayerName(){
