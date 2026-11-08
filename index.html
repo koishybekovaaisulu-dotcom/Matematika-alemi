@@ -404,6 +404,29 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 #game .equation{white-space:pre-line;line-height:1.35}
 @media(max-width:700px){#game .options{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Сиқырлы жинақ: саусақпен сүйреп жинау */
+.island-basket-card{background:linear-gradient(145deg,#ffe4b9,#ffe9e0 55%,#f6d9ff)}
+.island-basket-card .island-symbol{background:linear-gradient(145deg,#fff1bd,#f6a65f 60%,#df7c65);color:#fff}
+.basket-section{max-width:900px;margin:12px auto;padding:clamp(14px,3vw,28px)}
+.basket-task{text-align:center;background:linear-gradient(145deg,#fff7df,#fff0f7);border:2px solid white;border-radius:24px;padding:12px;margin:16px 0}
+.basket-target{font-size:clamp(48px,10vw,76px);font-weight:1000;color:#6b45a0;line-height:1.1}
+.basket-pictures{font-size:clamp(24px,5vw,38px);letter-spacing:4px;min-height:48px;overflow-wrap:anywhere}
+.basket-caption{font-size:15px;font-weight:900;color:#6a7895}
+.basket-play{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+.basket-items{display:grid;grid-template-columns:repeat(4,minmax(42px,1fr));gap:9px;align-content:start;min-height:190px;padding:12px;background:#eaf6ff;border:2px dashed #b9d8f1;border-radius:22px}
+.basket-item{display:grid;place-items:center;min-height:58px;border-radius:16px;background:#fff;box-shadow:0 4px 0 #d7e3ef;font-size:clamp(27px,5vw,38px);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.basket-item.used{visibility:hidden;pointer-events:none}
+.basket-item.dragging{position:fixed;z-index:9999;pointer-events:none;transform:scale(1.18);box-shadow:0 8px 22px #40557a55}
+.basket-drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:190px;padding:12px;background:linear-gradient(#f1fff4,#d8f3df);border:3px dashed #83c99a;border-radius:24px;transition:.15s}
+.basket-drop.over{background:#c9f2d3;border-color:#39a96a;transform:scale(1.02)}
+.basket-container{font-size:clamp(72px,14vw,112px);line-height:1.05;filter:drop-shadow(0 7px 5px #536b9933)}
+.basket-count{font-size:22px;font-weight:1000;color:#277b4a;background:white;border-radius:30px;padding:7px 17px;z-index:2}
+.basket-inside{position:absolute;bottom:20px;left:10%;right:10%;font-size:24px;letter-spacing:2px;text-align:center;pointer-events:none;overflow-wrap:anywhere}
+.basket-feedback{text-align:center;font-size:18px;font-weight:900;min-height:32px;margin:14px 0;color:#4d6488}
+.basket-feedback.good{color:#23834b;font-size:22px}
+@media(max-width:600px){.basket-play{grid-template-columns:1fr}.basket-items{grid-template-columns:repeat(5,minmax(0,1fr));min-height:130px}.basket-drop{min-height:160px}.basket-inside{bottom:12px;font-size:20px}.basket-item{min-height:50px}}
+
 </style>
 
 <link rel="icon" type="image/png" sizes="512x512" href="app-icon.png">
@@ -419,6 +442,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 <div class="section-heading"><div><h2>0-сынып</h2><p>Сандармен танысып, санауды үйрен!</p></div></div>
 <div class="island-grid">
 <button class="island-card island-count-card" onclick="chooseLevels(4)"><span class="island-symbol">🔢</span><strong>Санамақ аралы</strong><small>100 тапсырма · 10 кезең</small><span class="island-progress" id="progress4">0/100 ⭐</span></button>
+<button class="island-card island-basket-card" onclick="openBasketGame()"><span class="island-symbol">🧺</span><strong>Сиқырлы жинақ</strong><small>🍎 Жемістер · 🧸 Ойыншықтар</small><span class="island-progress" id="basketProgress">0/100 ⭐</span></button>
 </div></section>
 <section class="island-section">
 <div class="section-heading"><div><h2>1-сынып</h2><p>Аралды таңда да, 10 кезеңнен өт!</p></div></div>
@@ -432,6 +456,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 <nav class="bottom-nav"><button onclick="show('home')">🏠 Басты бет</button><button onclick="show('achievements')">🏆 Жетістіктер</button><button onclick="show('parent')">📊 Үлгерімім</button></nav></main>
 <main id="map" class="hidden stage-screen"><button class="secondary back" onclick="show('home')">← Басты бетке қайту</button><section class="section" id="levelPicker"></section></main>
 <main id="game" class="hidden"><button class="secondary back" onclick="show('map');chooseLevels(topicIndex)">← Кезеңдерге қайту</button><section class="section"><div class="gamehead"><div><span class="badge" id="topicbadge">Сандар аралы</span><h2 id="leveltitle">1-деңгей</h2></div><div class="pill">⭐ <span id="roundstars">0</span>/100</div></div><div class="track"><i id="roundbar" style="width:0%"></i></div><p class="muted" id="instruction">Дұрыс жауапты таңда!</p><div class="problem"><div class="equation" id="equation">2 + 3 = ?</div><div class="options" id="options"></div><div id="feedback"></div></div><div class="hint hidden" id="hint"></div><div class="actions" style="justify-content:center"><button class="primary hidden" id="next" onclick="nextQuestion()">Келесі есеп →</button></div></section></main>
+<main id="basketGame" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section basket-section"><div class="gamehead"><div><span class="badge">0-СЫНЫП · 🧺 СИҚЫРЛЫ ЖИНАҚ</span><h2 id="basketStage">1-кезең · 1/10</h2></div><div class="pill">⭐ <span id="basketStars">0</span>/100</div></div><div class="track"><i id="basketTrack" style="width:1%"></i></div><div class="basket-task"><div class="basket-target" id="basketTarget">5</div><div class="basket-pictures" id="basketPicture">🍎🍎🍎🍎🍎</div><div class="basket-caption" id="basketCaption">🍎</div></div><div class="basket-play"><div class="basket-items" id="basketItems" aria-label="Жинауға болатын заттар"></div><div class="basket-drop" id="basketDrop"><div class="basket-count" id="basketCount">0 / 5</div><div class="basket-container" id="basketContainer">🧺</div><div class="basket-inside" id="basketInside"></div></div></div><div class="basket-feedback" id="basketFeedback">Заттарды себетке сүйреп сал!</div><div class="actions" style="justify-content:center"><button class="primary hidden" id="basketNext" onclick="nextBasketTask()">Келесі тапсырма →</button></div></section></main>
 <main id="result" class="hidden"><section class="section" style="text-align:center"><div style="font-size:70px">🏆</div><h1>Жарайсың!</h1><h2 id="resultscore">10/10</h2><p id="resulttext">Сен керемет жұмыс жасадың!</p><div class="actions" style="justify-content:center"><button class="primary" onclick="show('map')">Картаға оралу</button><button class="secondary" onclick="replay()">Қайта ойнау</button></div></section></main>
 <main id="parent" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section"><h2>👨‍👩‍👧 Ата-ана кабинеті</h2><p class="muted">Бұл демо-нұсқадағы үлгерім осы құрылғыда сақталады.</p><div class="parentrow"><span>Орындалған тапсырмалар</span><b id="parentdone">0</b></div><div class="parentrow"><span>Жиналған жұлдыздар</span><b id="parentstars">0</b></div><div class="parentrow"><span>Жиналған монеталар</span><b id="parentcoins">0</b></div><div class="parentrow"><span>Аяқталған аралдар</span><b id="parentislands">0</b></div><p class="muted">Кеңес: баламен күніне 10–15 минут ойнау жеткілікті. Нәтижені мадақтап, қателесуге мүмкіндік беріңіз.</p></section></main>
 <main id="achievements" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section"><h2>🏅 Жетістіктер</h2><p id="achievementslist">Алғашқы жұлдызыңды жина!</p></section></main>
@@ -561,7 +586,7 @@ const topics=[
 
 let data;
 try { data=JSON.parse(localStorage.getItem("mathWorldSave")||"null") || {}; } catch(e) { data={}; }
-data={stars:Number(data.stars)||0,coins:Number(data.coins)||0,done:Number(data.done)||0,completed:data.completed&&typeof data.completed==="object"?data.completed:{},solved:data.solved&&typeof data.solved==="object"?data.solved:{},daily:Number(data.daily)||0};
+data={stars:Number(data.stars)||0,coins:Number(data.coins)||0,done:Number(data.done)||0,completed:data.completed&&typeof data.completed==="object"?data.completed:{},solved:data.solved&&typeof data.solved==="object"?data.solved:{},daily:Number(data.daily)||0,basketDone:Number(data.basketDone)||0};
 let topicIndex=0,qIndex=0,correctCount=0,answered=false;
 let playerName="";try{playerName=localStorage.getItem("mathWorldPlayerName")||"";}catch(e){playerName="";}
 
@@ -604,10 +629,10 @@ function refreshPlayer(){
 function beginGame(){savePlayerName();if(playerName){show("map");}}
 
 function save(){try{localStorage.setItem("mathWorldSave",JSON.stringify(data));}catch(e){}refresh()}
-function refresh(){document.getElementById("stars").textContent=data.stars;document.getElementById("coins").textContent=data.coins;document.getElementById("dailybar").style.width=Math.min(100,data.daily/5*100)+"%";document.getElementById("dailytext").textContent=Math.min(data.daily,5)+" / 5 тапсырма";document.getElementById("parentdone").textContent=data.done;document.getElementById("parentstars").textContent=data.stars;document.getElementById("parentcoins").textContent=data.coins;document.getElementById("parentislands").textContent=Object.keys(data.completed).length;document.getElementById("achievementslist").textContent=data.stars>=10?"🌟 Жұлдыз жинаушы — 10 жұлдыздан көп!":"⭐ Жұлдыздар: "+data.stars+" / 10 — жалғастыра бер!";renderIslands()}
+function refresh(){document.getElementById("stars").textContent=data.stars;document.getElementById("coins").textContent=data.coins;document.getElementById("dailybar").style.width=Math.min(100,data.daily/5*100)+"%";document.getElementById("dailytext").textContent=Math.min(data.daily,5)+" / 5 тапсырма";document.getElementById("parentdone").textContent=data.done;document.getElementById("parentstars").textContent=data.stars;document.getElementById("parentcoins").textContent=data.coins;document.getElementById("parentislands").textContent=Object.keys(data.completed).length;document.getElementById("achievementslist").textContent=data.stars>=10?"🌟 Жұлдыз жинаушы — 10 жұлдыздан көп!":"⭐ Жұлдыздар: "+data.stars+" / 10 — жалғастыра бер!";renderIslands();const bp=document.getElementById("basketProgress");if(bp)bp.textContent=(data.basketDone||0)+"/100 ⭐";}
 function subscriptionInfo(plan){const n=document.getElementById("planNotice");if(n)n.textContent=plan+" таңдалды. Бұл әзірге тарифті көрсету макеті: төлем жасау функциясы әлі қосылмаған."; }
 function show(id){
- ["home","map","game","result","parent","achievements","plans"].forEach(x=>{
+ ["home","map","game","basketGame","result","parent","achievements","plans"].forEach(x=>{
    const screen=document.getElementById(x);
    if(screen) screen.classList.toggle("hidden",x!==id);
  });
@@ -689,6 +714,40 @@ function nextQuestion(){
  show("result");
 }
 function replay(){startTopic(topicIndex)}
+
+// 100 drag-and-drop collecting tasks: fruits and toys, saved on this device.
+const basketObjects=["🍎","🍐","🍓","🍊","🍌","🍇","🍉","🥕","🧸","🚗","⚽","🧩","🪀","🪁","🪆"];
+let basketIndex=Number(data.basketDone)||0,basketTarget=0,basketCollected=0,basketObject="🍎",basketDrag=null,basketTaskObjects=[];
+function basketTaskAt(i){const n=1+(i%10)+ (i>=50?10:0);const obj=basketObjects[(i*7+Math.floor(i/3)*2)%basketObjects.length];return {n,obj};}
+function openBasketGame(){basketIndex=Math.min(99,Number(data.basketDone)||0);show("basketGame");renderBasketTask();}
+function renderBasketTask(){
+ const task=basketTaskAt(basketIndex);basketTarget=task.n;basketObject=task.obj;basketCollected=0;
+ document.getElementById("basketStage").textContent=(Math.floor(basketIndex/10)+1)+"-кезең · "+(basketIndex%10+1)+"/10";
+ document.getElementById("basketStars").textContent=data.basketDone||0;
+ document.getElementById("basketTrack").style.width=((basketIndex+1)/100*100)+"%";
+ document.getElementById("basketTarget").textContent=task.n;
+ document.getElementById("basketPicture").textContent=Array.from({length:Math.min(task.n,12)},()=>task.obj).join(" ");
+ document.getElementById("basketCaption").textContent=task.n>10?"🔟 + "+(task.n-10):" ";
+ document.getElementById("basketCount").textContent="0 / "+task.n;
+ document.getElementById("basketContainer").textContent=task.obj.match(/[🧸🚗⚽🧩🪀🪁🪆]/u)?"🧸":"🧺";
+ document.getElementById("basketInside").textContent="";
+ document.getElementById("basketFeedback").className="basket-feedback";
+ document.getElementById("basketFeedback").textContent="Заттарды себетке сүйреп сал!";
+ document.getElementById("basketNext").classList.add("hidden");
+ const count=Math.max(task.n+4,10);
+ basketTaskObjects=Array.from({length:count},(_,j)=>basketObjects[(Math.floor(basketIndex/2)+j*3+basketIndex)%basketObjects.length]);
+ // Ensure there are enough matching objects to complete the task.
+ for(let j=0;j<task.n;j++)basketTaskObjects[j]=task.obj;
+ basketTaskObjects=shuffleQuestions(basketTaskObjects,basketIndex*113+29);
+ const box=document.getElementById("basketItems");box.innerHTML="";
+ basketTaskObjects.forEach((emoji,j)=>{const el=document.createElement("button");el.type="button";el.className="basket-item";el.textContent=emoji;el.setAttribute("aria-label","Затты себетке сал");el.addEventListener("pointerdown",e=>startBasketDrag(e,el));box.appendChild(el);});
+}
+function startBasketDrag(e,el){if(el.classList.contains("used")||document.getElementById("basketNext").classList.contains("hidden")===false)return;e.preventDefault();const r=el.getBoundingClientRect();basketDrag={el,dx:e.clientX-r.left,dy:e.clientY-r.top,origin:{left:r.left,top:r.top}};el.classList.add("dragging");el.style.width=r.width+"px";el.style.height=r.height+"px";moveBasketDrag(e);document.addEventListener("pointermove",moveBasketDrag,{passive:false});document.addEventListener("pointerup",endBasketDrag,{once:true});}
+function moveBasketDrag(e){if(!basketDrag)return;e.preventDefault();const el=basketDrag.el;el.style.left=(e.clientX-basketDrag.dx)+"px";el.style.top=(e.clientY-basketDrag.dy)+"px";const drop=document.getElementById("basketDrop"),r=drop.getBoundingClientRect();drop.classList.toggle("over",e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom);}
+function endBasketDrag(e){document.removeEventListener("pointermove",moveBasketDrag);const drag=basketDrag;if(!drag)return;basketDrag=null;const el=drag.el;el.classList.remove("dragging");el.style.cssText="";const r=document.getElementById("basketDrop").getBoundingClientRect();const inside=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;document.getElementById("basketDrop").classList.remove("over");if(inside&&!el.classList.contains("used")){el.classList.add("used");basketCollected++;document.getElementById("basketCount").textContent=basketCollected+" / "+basketTarget;document.getElementById("basketInside").textContent=Array.from({length:basketCollected},()=>basketObject).join(" ");if(basketCollected>=basketTarget)completeBasketTask();}}
+function completeBasketTask(){playAnswerSound(true);data.basketDone=Math.max(Number(data.basketDone)||0,basketIndex+1);data.done++;data.stars++;data.coins+=2;data.daily++;save();document.getElementById("basketStars").textContent=data.basketDone;document.getElementById("basketFeedback").className="basket-feedback good";document.getElementById("basketFeedback").textContent=basketTarget+" зат жиналды! ⭐";document.getElementById("basketNext").classList.remove("hidden");document.getElementById("basketNext").textContent=basketIndex>=99?"Қайталау →":"Келесі тапсырма →";}
+function nextBasketTask(){if(basketIndex>=99){basketIndex=0;data.basketDone=0;}else basketIndex++;renderBasketTask();}
+
 refresh();refreshPlayer();show("home");
 
 </script></body></html>
