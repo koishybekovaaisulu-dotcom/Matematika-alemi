@@ -416,13 +416,13 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 .basket-play{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
 .basket-items{display:grid;grid-template-columns:repeat(4,minmax(42px,1fr));gap:9px;align-content:start;min-height:190px;padding:12px;background:#eaf6ff;border:2px dashed #b9d8f1;border-radius:22px}
 .basket-item{display:grid;place-items:center;min-height:58px;border-radius:16px;background:#fff;box-shadow:0 4px 0 #d7e3ef;font-size:clamp(27px,5vw,38px);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
-.basket-item.used{visibility:hidden;pointer-events:none}
+.basket-item.used{opacity:.22;filter:grayscale(1);pointer-events:none}
 .basket-item.dragging{position:fixed;z-index:9999;pointer-events:none;transform:scale(1.18);box-shadow:0 8px 22px #40557a55}
 .basket-drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:190px;padding:12px;background:linear-gradient(#f1fff4,#d8f3df);border:3px dashed #83c99a;border-radius:24px;transition:.15s}
 .basket-drop.over{background:#c9f2d3;border-color:#39a96a;transform:scale(1.02)}
 .basket-container{font-size:clamp(72px,14vw,112px);line-height:1.05;filter:drop-shadow(0 7px 5px #536b9933)}
 .basket-count{font-size:22px;font-weight:1000;color:#277b4a;background:white;border-radius:30px;padding:7px 17px;z-index:2}
-.basket-inside{position:absolute;bottom:20px;left:10%;right:10%;font-size:24px;letter-spacing:2px;text-align:center;pointer-events:none;overflow-wrap:anywhere}
+.basket-inside{position:absolute;bottom:12px;left:8%;right:8%;display:flex;flex-wrap:wrap;justify-content:center;gap:5px;z-index:4;pointer-events:auto}.basket-inside button{border:0;border-radius:10px;background:#ffffffd9;padding:2px 5px;font-size:24px;line-height:1.2;cursor:pointer;touch-action:manipulation;box-shadow:0 2px 4px #47634a33}.basket-inside button:active{transform:scale(.9)}
 .basket-feedback{text-align:center;font-size:18px;font-weight:900;min-height:32px;margin:14px 0;color:#4d6488}
 .basket-feedback.good{color:#23834b;font-size:22px}.basket-feedback.bad{color:#d52f42;background:#fff0f1;border:2px solid #ef9aa5;border-radius:14px;padding:9px}
 @media(max-width:600px){.basket-play{grid-template-columns:1fr}.basket-items{grid-template-columns:repeat(5,minmax(0,1fr));min-height:130px}.basket-drop{min-height:160px}.basket-inside{bottom:12px;font-size:20px}.basket-item{min-height:50px}}
@@ -742,7 +742,7 @@ function renderBasketTask(){
  document.getElementById("basketCaption").textContent=task.n>10?"🔟 + "+(task.n-10):" ";
  document.getElementById("basketCount").textContent="0 / "+task.n;
  document.getElementById("basketContainer").textContent=task.obj.match(/[🧸🚗⚽🧩🪀🪁🪆]/u)?"🧸":"🧺";
- document.getElementById("basketInside").textContent="";
+ document.getElementById("basketInside").innerHTML="";
  document.getElementById("basketFeedback").className="basket-feedback";
  document.getElementById("basketFeedback").textContent="Заттарды себетке сүйреп сал!";
  document.getElementById("basketNext").classList.add("hidden");
@@ -753,16 +753,17 @@ function renderBasketTask(){
  const box=document.getElementById("basketItems");box.innerHTML="";
  basketTaskObjects.forEach((emoji,j)=>{const el=document.createElement("button");el.type="button";el.className="basket-item";el.textContent=emoji;el.setAttribute("aria-label","Себетке салу немесе себеттен алу");el.addEventListener("pointerdown",e=>startBasketDrag(e,el));el.addEventListener("click",()=>{if(el.classList.contains("used"))removeBasketItem(el);});box.appendChild(el);});
 }
-function startBasketDrag(e,el){if(document.getElementById("basketNext").classList.contains("hidden")===false)return;e.preventDefault();const r=el.getBoundingClientRect();basketDrag={el,dx:e.clientX-r.left,dy:e.clientY-r.top,origin:{left:r.left,top:r.top}};el.classList.add("dragging");el.style.width=r.width+"px";el.style.height=r.height+"px";moveBasketDrag(e);document.addEventListener("pointermove",moveBasketDrag,{passive:false});document.addEventListener("pointerup",endBasketDrag,{once:true});}
+function startBasketDrag(e,el){if(document.getElementById("basketNext").classList.contains("hidden")===false)return;if(el.classList.contains("used")){e.preventDefault();removeBasketItem(el);return;}e.preventDefault();const r=el.getBoundingClientRect();basketDrag={el,dx:e.clientX-r.left,dy:e.clientY-r.top,origin:{left:r.left,top:r.top}};el.classList.add("dragging");el.style.width=r.width+"px";el.style.height=r.height+"px";moveBasketDrag(e);document.addEventListener("pointermove",moveBasketDrag,{passive:false});document.addEventListener("pointerup",endBasketDrag,{once:true});}
 function moveBasketDrag(e){if(!basketDrag)return;e.preventDefault();const el=basketDrag.el;el.style.left=(e.clientX-basketDrag.dx)+"px";el.style.top=(e.clientY-basketDrag.dy)+"px";const drop=document.getElementById("basketDrop"),r=drop.getBoundingClientRect();drop.classList.toggle("over",e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom);}
 function endBasketDrag(e){document.removeEventListener("pointermove",moveBasketDrag);const drag=basketDrag;if(!drag)return;basketDrag=null;const el=drag.el;el.classList.remove("dragging");el.style.cssText="";const r=document.getElementById("basketDrop").getBoundingClientRect();const inside=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;document.getElementById("basketDrop").classList.remove("over");if(inside&&!el.classList.contains("used")){
  el.classList.add("used");basketCollected++;
  document.getElementById("basketCount").textContent=basketCollected+" / "+basketTarget;
- document.getElementById("basketInside").textContent=Array.from({length:basketCollected},()=>basketObject).join(" ");
+ renderBasketInside();
  document.getElementById("basketFeedback").className="basket-feedback";
  document.getElementById("basketFeedback").textContent="Жинадың: "+basketCollected+". Затты алып тастау үшін оны қайта түрт!";
  }}
-function removeBasketItem(el){if(!el.classList.contains("used")||document.getElementById("basketNext").classList.contains("hidden")===false)return;el.classList.remove("used");basketCollected=Math.max(0,basketCollected-1);document.getElementById("basketCount").textContent=basketCollected+" / "+basketTarget;document.getElementById("basketInside").textContent=Array.from({length:basketCollected},()=>basketObject).join(" ");const fb=document.getElementById("basketFeedback");fb.className="basket-feedback";fb.textContent="Затты себеттен алдың. Қайта жинай бер!";}
+function renderBasketInside(){const inside=document.getElementById("basketInside");inside.innerHTML="";document.querySelectorAll("#basketItems .basket-item.used").forEach(el=>{const chip=document.createElement("button");chip.type="button";chip.textContent=basketObject;chip.setAttribute("aria-label","Затты себеттен алып тастау");chip.addEventListener("click",()=>removeBasketItem(el));inside.appendChild(chip);});}
+function removeBasketItem(el){if(!el.classList.contains("used")||document.getElementById("basketNext").classList.contains("hidden")===false)return;el.classList.remove("used");basketCollected=Math.max(0,basketCollected-1);document.getElementById("basketCount").textContent=basketCollected+" / "+basketTarget;renderBasketInside();const fb=document.getElementById("basketFeedback");fb.className="basket-feedback";fb.textContent="Затты себеттен алдың. Қайта жинай бер!";}
 function checkBasketTask(){
  if(basketCollected===basketTarget){completeBasketTask();return;}
  playAnswerSound(false);
