@@ -772,6 +772,7 @@ function renderIslands(){
  topics.forEach((t,i)=>{const el=document.getElementById("progress"+i);if(el){const n=(data.solved[i]||[]).length;el.textContent=n+"/"+t.qs.length+" ⭐";}});
 }
 function chooseLevels(i){
+ if(!zereCanStart())return;
  topicIndex=i;show("map");
  const p=document.getElementById("levelPicker");
  p.innerHTML=`<h2>${topics[i].name}</h2><p class="muted">Тек осы аралдың есептері. 10 кезең, әр кезеңде 10 есептен.</p><div class="stage-grid">${Array.from({length:Math.ceil(topics[i].qs.length/10)},(_,k)=>{
@@ -784,6 +785,7 @@ function chooseLevels(i){
  window.scrollTo({top:0,behavior:"smooth"});
 }
 function startTopic(i,start=0){
+ if(!zereCanStart())return;
  topicIndex=i;const solved=data.solved[i]||[];
  const end=Math.min(start+10,topics[i].qs.length);
  qIndex=start;
@@ -808,7 +810,9 @@ function renderQuestion(){
  document.getElementById("options").innerHTML=q[2].map(v=>`<button class="option" onclick="answer(${JSON.stringify(v).replace(/"/g,'&quot;')},this)">${v}</button>`).join("");
 }
 function answer(v,btn){
- if(answered)return;answered=true;
+ if(answered)return;
+ if(!zereCanStart())return;
+ answered=true;
  let q=topics[topicIndex].qs[qIndex],ok=v===q[1];
  document.querySelectorAll(".option").forEach(b=>{b.disabled=true;if(String(b.textContent)===String(q[1]))b.classList.add("correct");});
  if(!ok)btn.classList.add("wrong");
@@ -828,6 +832,8 @@ function answer(v,btn){
  if(ok){document.getElementById("next").classList.remove("hidden");document.getElementById("next").textContent="Келесі есеп →";}else{document.getElementById("retryQuestion").classList.remove("hidden");}
 }
 function nextQuestion(){
+ // 10 тапсырма орындалған соң келесі есепке өтуді тоқтату.
+ if(!zereCanStart())return;
  const solved=data.solved[topicIndex]||[];
  const end=Math.min(Math.floor(qIndex/10)*10+10,topics[topicIndex].qs.length);
  let next=qIndex+1;
