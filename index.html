@@ -427,14 +427,45 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 .basket-feedback.good{color:#23834b;font-size:22px}.basket-feedback.bad{color:#d52f42;background:#fff0f1;border:2px solid #ef9aa5;border-radius:14px;padding:9px}
 @media(max-width:600px){.basket-play{grid-template-columns:1fr}.basket-items{grid-template-columns:repeat(5,minmax(0,1fr));min-height:130px}.basket-drop{min-height:160px}.basket-inside{bottom:12px;font-size:20px}.basket-item{min-height:50px}}
 
+
+.auth-overlay{position:fixed;inset:0;z-index:10000;background:#26365fcc;display:flex;align-items:center;justify-content:center;padding:16px}
+.auth-card{width:min(100%,440px);background:linear-gradient(145deg,#fffaff,#eef7ff);border:3px solid white;border-radius:26px;padding:24px;box-shadow:0 18px 55px #1d2d5566;color:#26365f}
+.auth-card h2{margin:0 0 8px}.auth-card p{color:#687997;margin:8px 0 16px}
+.auth-card label{display:block;font-weight:850;margin:12px 0 6px}
+.auth-card input{width:100%;padding:14px;border:2px solid #dce5f5;border-radius:14px;font:inherit;background:white;color:#26365f}
+.auth-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.auth-message{padding:10px;border-radius:12px;background:#fff4d9;margin-top:12px;font-weight:750}
+.auth-message.good{background:#e4f8e9;color:#22633b}.auth-close{float:right;background:#fff;border-radius:50%;width:34px;height:34px;font-size:20px}
+
 </style>
 
 <link rel="icon" type="image/png" sizes="512x512" href="app-icon.png">
 <link rel="apple-touch-icon" href="app-icon.png">
 <meta name="theme-color" content="#eaf4ff">
 </head>
-<body><div class="wrap">
-<header class="top"><div class="brand">Zere <span>Математика аралы</span></div><div class="stats"><div class="pill">⭐ <b id="stars">0</b></div><div class="pill">🪙 <b id="coins">0</b></div><div class="pill" id="player">👧 Досым · 1-сынып</div></div></header>
+<body>
+<div id="authOverlay" class="auth-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+ <div class="auth-card">
+  <button class="auth-close" type="button" onclick="closeAuth()" aria-label="Жабу">×</button>
+  <h2 id="authTitle">👋 Zere-ге тіркелу</h2>
+  <p>Электрондық поштаңызды енгізіңіз. Біз сізге бір реттік растау кодын жібереміз.</p>
+  <label for="authEmail">Электрондық пошта</label>
+  <input id="authEmail" type="email" autocomplete="email" placeholder="example@mail.com">
+  <div id="authCodeWrap" class="hidden">
+   <label for="authCode">Поштаға келген 8 таңбалы код</label>
+   <input id="authCode" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="00000000">
+  </div>
+  <div id="authMessage" class="auth-message hidden" aria-live="polite"></div>
+  <div class="auth-actions">
+   <button id="authSendBtn" class="primary" type="button" onclick="sendAuthCode()">Код жіберу</button>
+   <button id="authVerifyBtn" class="primary hidden" type="button" onclick="verifyAuthCode()">Кодты растау</button>
+   <button class="secondary" type="button" onclick="closeAuth()">Жабу</button>
+  </div>
+ </div>
+</div>
+
+<div class="wrap">
+<header class="top"><div class="brand">Zere <span>Математика аралы</span></div><div class="stats"><button class="pill" type="button" onclick="openAuth()">👤 Тіркелу / Кіру</button><div class="pill">⭐ <b id="stars">0</b></div><div class="pill">🪙 <b id="coins">0</b></div><div class="pill" id="player">👧 Досым · 1-сынып</div></div></header>
 <main id="home" class="home-design">
 <section class="welcome-panel"><div class="welcome-copy"><div class="eyebrow">✨ 1-СЫНЫПҚА АРНАЛҒАН ОЙЫН</div><h1>Zere — <span>Математика аралы</span></h1><p>Сәлем, досым! Қай аралға саяхаттаймыз?</p></div>
 <div class="player-editor"><div class="avatar">👧</div><div class="player-edit-fields"><label for="childName">Баланың аты</label><div class="name-row"><input id="childName" maxlength="18" placeholder="Атыңды жаз..." autocomplete="off"><button class="save-name-btn" onclick="savePlayerName()">Сақтау</button></div><small>Атың барлық бетте сақталады</small></div></div></section>
@@ -478,7 +509,66 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 <main id="achievements" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section"><h2>🏅 Жетістіктер</h2><p id="achievementslist">Алғашқы жұлдызыңды жина!</p></section></main>
 <footer class="footer">Zere — Математика аралы · Оқу — қызықты саяхат! 🌈</footer>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+
+// Supabase email OTP registration/login
+const ZERE_SUPABASE_URL = "https://rswcienddvbbiaatdigb.supabase.co";
+const ZERE_SUPABASE_KEY = "sb_publishable_P6Mdfqdk4VfMbAeslztupg_8KLR3Ir7";
+let zereSupabase = null;
+try {
+ if(window.supabase && window.supabase.createClient){
+  zereSupabase = window.supabase.createClient(ZERE_SUPABASE_URL,ZERE_SUPABASE_KEY);
+ }
+}catch(e){ console.error("Supabase init:",e); }
+function openAuth(){
+ document.getElementById("authOverlay").classList.remove("hidden");
+ document.getElementById("authMessage").classList.add("hidden");
+ document.getElementById("authCodeWrap").classList.add("hidden");
+ document.getElementById("authVerifyBtn").classList.add("hidden");
+ document.getElementById("authSendBtn").classList.remove("hidden");
+ document.getElementById("authTitle").textContent="👋 Zere-ге тіркелу / кіру";
+}
+function closeAuth(){document.getElementById("authOverlay").classList.add("hidden");}
+function authNotice(message,good=false){
+ const el=document.getElementById("authMessage");
+ el.textContent=message;el.classList.remove("hidden","good");
+ if(good)el.classList.add("good");
+}
+async function sendAuthCode(){
+ const email=(document.getElementById("authEmail").value||"").trim().toLowerCase();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){authNotice("Электрондық поштаңызды дұрыс жазыңыз.");return;}
+ if(!zereSupabase){authNotice("Тіркелу қызметі жүктелмеді. Интернетті тексеріп, бетті жаңартыңыз.");return;}
+ const btn=document.getElementById("authSendBtn");btn.disabled=true;btn.textContent="Жіберілуде...";
+ try{
+  const {error}=await zereSupabase.auth.signInWithOtp({email,options:{shouldCreateUser:true}});
+  if(error)throw error;
+  document.getElementById("authCodeWrap").classList.remove("hidden");
+  document.getElementById("authSendBtn").classList.add("hidden");
+  document.getElementById("authVerifyBtn").classList.remove("hidden");
+  authNotice("Код поштаңызға жіберілді. Кіріс жәшігін және Спам бөлімін тексеріңіз.",true);
+ }catch(e){authNotice("Код жіберілмеді: "+(e.message||"Қате орын алды"));}
+ finally{btn.disabled=false;btn.textContent="Код жіберу";}
+}
+async function verifyAuthCode(){
+ const email=(document.getElementById("authEmail").value||"").trim().toLowerCase();
+ const token=(document.getElementById("authCode").value||"").trim();
+ if(!/^\d{6,8}$/.test(token)){authNotice("Поштаға келген 6–8 таңбалы кодты енгізіңіз.");return;}
+ if(!zereSupabase){authNotice("Тіркелу қызметі жүктелмеді. Бетті жаңартыңыз.");return;}
+ const btn=document.getElementById("authVerifyBtn");btn.disabled=true;btn.textContent="Тексерілуде...";
+ try{
+  const {data:result,error}=await zereSupabase.auth.verifyOtp({email,token,type:"email"});
+  if(error)throw error;
+  authNotice("Сәтті кірдіңіз! Аккаунтыңыз расталды.",true);
+  const userEmail=result.user?.email||email;
+  document.getElementById("authTitle").textContent="✅ Қош келдіңіз!";
+  document.getElementById("authVerifyBtn").classList.add("hidden");
+  document.getElementById("authEmail").value=userEmail;
+  const player=document.getElementById("player");
+  if(player)player.textContent="👤 "+userEmail;
+ }catch(e){authNotice("Код қате немесе мерзімі өтіп кеткен: "+(e.message||"Қайта көріңіз"));}
+ finally{btn.disabled=false;btn.textContent="Кодты растау";}
+}
 
 function makeQuestions(items){
   return items.map((item,i)=>{
