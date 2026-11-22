@@ -485,10 +485,14 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
   <p><b>Бір рет төлеу — өмір бойы қолжетімділік.</b></p>
   <p>Төлемді растағаннан кейін толық нұсқаны ашамыз. Бұл нұсқада төлем автоматты тексерілмейді.</p>
   <div class="limit-actions">
-   <button class="primary" onclick="showPaymentHelp()">Төлем туралы</button>
+   <a class="primary" href="https://pay.kaspi.kz/pay/ri967s5w" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none">Kaspi арқылы 1490 ₸ төлеу</a>
    <button class="secondary" onclick="closeLimitGate()">Кейінірек</button>
   </div>
-  <p id="paymentHelpText" class="hidden" style="font-size:14px;margin-top:14px">Kaspi арқылы 1490 ₸ төлем жасап, түбіртекті сайт иесіне жіберіңіз. Түбіртек тексерілген соң қолжетімділік қолмен ашылады.</p>
+  <p id="paymentHelpText" style="font-size:14px;margin-top:14px">
+   Төлем жасаған соң түбіртекті WhatsApp арқылы жіберіңіз:
+   <a href="https://wa.me/77718840990?text=%D0%A1%D3%99%D0%BB%D0%B5%D0%BC%D0%B5%D1%82%D1%81%D1%96%D0%B7%20%D0%B1%D0%B5!%201490%20%E2%82%B8%20%D1%82%D3%A9%D0%BB%D0%B5%D0%BC%D1%96%D0%BD%D1%96%D2%A3%20%D1%82%D2%AF%D0%B1%D1%96%D1%80%D1%82%D0%B5%D0%B3%D1%96%D0%BD%20%D0%B6%D1%96%D0%B1%D0%B5%D1%80%D1%96%D0%BF%20%D0%BE%D1%82%D1%8B%D1%80%D0%BC%D1%8B%D0%BD." target="_blank" rel="noopener noreferrer">+7 771 884 09 90</a>.
+   Түбіртек тексерілген соң қолжетімділік қолмен ашылады.
+  </p>
  </div>
 </section>
 
@@ -772,7 +776,6 @@ function renderIslands(){
  topics.forEach((t,i)=>{const el=document.getElementById("progress"+i);if(el){const n=(data.solved[i]||[]).length;el.textContent=n+"/"+t.qs.length+" ⭐";}});
 }
 function chooseLevels(i){
- if(!zereCanStart())return;
  topicIndex=i;show("map");
  const p=document.getElementById("levelPicker");
  p.innerHTML=`<h2>${topics[i].name}</h2><p class="muted">Тек осы аралдың есептері. 10 кезең, әр кезеңде 10 есептен.</p><div class="stage-grid">${Array.from({length:Math.ceil(topics[i].qs.length/10)},(_,k)=>{
@@ -785,7 +788,6 @@ function chooseLevels(i){
  window.scrollTo({top:0,behavior:"smooth"});
 }
 function startTopic(i,start=0){
- if(!zereCanStart())return;
  topicIndex=i;const solved=data.solved[i]||[];
  const end=Math.min(start+10,topics[i].qs.length);
  qIndex=start;
@@ -810,9 +812,7 @@ function renderQuestion(){
  document.getElementById("options").innerHTML=q[2].map(v=>`<button class="option" onclick="answer(${JSON.stringify(v).replace(/"/g,'&quot;')},this)">${v}</button>`).join("");
 }
 function answer(v,btn){
- if(answered)return;
- if(!zereCanStart())return;
- answered=true;
+ if(answered)return;answered=true;
  let q=topics[topicIndex].qs[qIndex],ok=v===q[1];
  document.querySelectorAll(".option").forEach(b=>{b.disabled=true;if(String(b.textContent)===String(q[1]))b.classList.add("correct");});
  if(!ok)btn.classList.add("wrong");
@@ -832,8 +832,6 @@ function answer(v,btn){
  if(ok){document.getElementById("next").classList.remove("hidden");document.getElementById("next").textContent="Келесі есеп →";}else{document.getElementById("retryQuestion").classList.remove("hidden");}
 }
 function nextQuestion(){
- // 10 тапсырма орындалған соң келесі есепке өтуді тоқтату.
- if(!zereCanStart())return;
  const solved=data.solved[topicIndex]||[];
  const end=Math.min(Math.floor(qIndex/10)*10+10,topics[topicIndex].qs.length);
  let next=qIndex+1;
