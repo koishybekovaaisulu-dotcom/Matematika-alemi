@@ -442,6 +442,17 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
 .auth-mark{font-size:54px;line-height:1.2}
 .auth-note{font-size:13px!important;color:#8995aa!important;margin-top:18px!important}
 
+
+/* 10 free completed tasks gate */
+#freeLimitGate{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:18px;background:#26365f99;backdrop-filter:blur(5px)}
+#freeLimitGate.show{display:flex}
+#freeLimitGate .limit-card{width:min(100%,470px);background:linear-gradient(145deg,#fff9ff,#edf6ff);border:3px solid white;border-radius:28px;padding:26px;text-align:center;box-shadow:0 14px 0 #7863aa55,0 24px 50px #17244755}
+#freeLimitGate h2{color:#633c9c;margin:8px 0}
+#freeLimitGate p{color:#596b8e}
+#freeLimitGate .limit-price{font-size:34px;font-weight:1000;color:#c04d91;margin:12px}
+#freeLimitGate .limit-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+#freeLimitGate .limit-actions button{flex:1;min-width:140px}
+
 </style>
 
 <link rel="icon" type="image/png" sizes="512x512" href="app-icon.png">
@@ -464,6 +475,23 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
   <p class="auth-note">Растау хаты келген соң, хаттағы сілтемені басыңыз. Сонда ойын аралдары ашылады.</p>
  </div>
 </section>
+
+<section id="freeLimitGate" role="dialog" aria-modal="true" aria-labelledby="freeLimitTitle">
+ <div class="limit-card">
+  <div style="font-size:48px">🌈</div>
+  <h2 id="freeLimitTitle">Тегін 10 есеп аяқталды!</h2>
+  <p>Жарайсың! Zere аралдарындағы барлық есепті жалғастыру үшін толық қолжетімділікті ашуға болады.</p>
+  <div class="limit-price">1490 ₸</div>
+  <p><b>Бір рет төлеу — өмір бойы қолжетімділік.</b></p>
+  <p>Төлемді растағаннан кейін толық нұсқаны ашамыз. Бұл нұсқада төлем автоматты тексерілмейді.</p>
+  <div class="limit-actions">
+   <button class="primary" onclick="showPaymentHelp()">Төлем туралы</button>
+   <button class="secondary" onclick="closeLimitGate()">Кейінірек</button>
+  </div>
+  <p id="paymentHelpText" class="hidden" style="font-size:14px;margin-top:14px">Kaspi арқылы 1490 ₸ төлем жасап, түбіртекті сайт иесіне жіберіңіз. Түбіртек тексерілген соң қолжетімділік қолмен ашылады.</p>
+ </div>
+</section>
+
 <div class="wrap">
 <header class="top"><div class="brand">Zere <span>Математика аралы</span></div><div class="stats"><div class="pill">⭐ <b id="stars">0</b></div><div class="pill">🪙 <b id="coins">0</b></div><div class="pill" id="player">👧 Досым · 1-сынып</div></div></header>
 <main id="home" class="home-design">
@@ -686,6 +714,29 @@ async function playAnswerSound(isCorrect){
  }catch(e){if(ctx)try{ctx.close()}catch(_){} }
 }
 
+
+const ZERE_FREE_LIMIT = 10;
+function zereAccountKey(){
+ const email=(localStorage.getItem("zereSignedInEmail")||"guest").trim().toLowerCase();
+ return "zereLifetimePaid:"+email;
+}
+function zereIsPaid(){
+ try{return localStorage.getItem(zereAccountKey())==="true";}catch(e){return false;}
+}
+function zereCompletedCount(){
+ const topicCount=Object.values(data.solved||{}).reduce((sum,arr)=>sum+(Array.isArray(arr)?new Set(arr).size:0),0);
+ return topicCount + Math.min(100,Math.max(0,Number(data.basketDone)||0));
+}
+function zereCanStart(){
+ if(zereIsPaid()||zereCompletedCount()<ZERE_FREE_LIMIT)return true;
+ openLimitGate();return false;
+}
+function openLimitGate(){document.getElementById("freeLimitGate")?.classList.add("show");}
+function closeLimitGate(){document.getElementById("freeLimitGate")?.classList.remove("show");}
+function showPaymentHelp(){
+ const el=document.getElementById("paymentHelpText");if(el)el.classList.remove("hidden");
+}
+
 function savePlayerName(){
  const field=document.getElementById("childName");
  const value=(field.value||"").trim();
@@ -804,7 +855,7 @@ function basketTaskAt(i){
  const obj=basketObjects[(i*7+Math.floor(i/3)*2)%basketObjects.length];
  return {n,obj};
 }
-function openBasketGame(){basketIndex=Math.min(99,Number(data.basketDone)||0);show("basketGame");renderBasketTask();}
+function openBasketGame(){if(!zereCanStart())return;basketIndex=Math.min(99,Number(data.basketDone)||0);show("basketGame");renderBasketTask();}
 function renderBasketTask(){
  const task=basketTaskAt(basketIndex);basketTarget=task.n;basketObject=task.obj;basketCollected=0;
  document.getElementById("basketStage").textContent=(Math.floor(basketIndex/10)+1)+"-кезең · "+(basketIndex%10+1)+"/10";
@@ -843,7 +894,7 @@ function checkBasketTask(){
  const fb=document.getElementById("basketFeedback");fb.className="basket-feedback bad";
  fb.textContent=basketCollected<basketTarget?"Әлі аз! Тағы "+(basketTarget-basketCollected)+" зат жина.":"Артық жинадың! "+(basketCollected-basketTarget)+" затты алып таста.";
 }
-function completeBasketTask(){playAnswerSound(true);document.getElementById("basketCheck").classList.add("hidden");data.basketDone=Math.max(Number(data.basketDone)||0,basketIndex+1);data.done++;data.stars++;data.coins+=2;data.daily++;save();document.getElementById("basketStars").textContent=data.basketDone;document.getElementById("basketFeedback").className="basket-feedback good";document.getElementById("basketFeedback").textContent=basketTarget+" зат жиналды! ⭐";document.getElementById("basketNext").classList.remove("hidden");document.getElementById("basketNext").textContent=basketIndex>=99?"Қайталау →":"Келесі тапсырма →";}
+function completeBasketTask(){if(!zereIsPaid() && zereCompletedCount()>=ZERE_FREE_LIMIT){openLimitGate();return;}playAnswerSound(true);document.getElementById("basketCheck").classList.add("hidden");data.basketDone=Math.max(Number(data.basketDone)||0,basketIndex+1);data.done++;data.stars++;data.coins+=2;data.daily++;save();document.getElementById("basketStars").textContent=data.basketDone;document.getElementById("basketFeedback").className="basket-feedback good";document.getElementById("basketFeedback").textContent=basketTarget+" зат жиналды! ⭐";document.getElementById("basketNext").classList.remove("hidden");document.getElementById("basketNext").textContent=basketIndex>=99?"Қайталау →":"Келесі тапсырма →";}
 function nextBasketTask(){if(basketIndex>=99){basketIndex=0;data.basketDone=0;}else basketIndex++;renderBasketTask();}
 
 refresh();refreshPlayer();show("home");
