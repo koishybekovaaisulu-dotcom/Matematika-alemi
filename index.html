@@ -754,6 +754,10 @@ async function adminGrantAccess(){
   const {data,error}=await zereSupabase.rpc("zere_admin_grant_access",{target_email:email});
   if(error)throw error;
   status.textContent="Дайын! "+email+" аккаунтына өмір бойғы толық қолжетімділік ашылды.";
+  if(zereCurrentUser && (zereCurrentUser.email||"").toLowerCase()===email){
+   const {data:ownRows}=await zereSupabase.from("zere_access").select("user_id").eq("user_id",zereCurrentUser.id).limit(1);
+   zerePaidActive=!!(ownRows&&ownRows.length);
+  }
   input.value="";
  }catch(err){
   status.textContent="Қате: "+(err.message||"Операция орындалмады")+". SQL функциясының орнатылғанын және email дұрыс екенін тексеріңіз.";
@@ -792,7 +796,7 @@ function save(){try{localStorage.setItem("mathWorldSave",JSON.stringify(data));}
 function refresh(){document.getElementById("stars").textContent=data.stars;document.getElementById("coins").textContent=data.coins;document.getElementById("dailybar").style.width=Math.min(100,data.daily/5*100)+"%";document.getElementById("dailytext").textContent=Math.min(data.daily,5)+" / 5 тапсырма";document.getElementById("parentdone").textContent=data.done;document.getElementById("parentstars").textContent=data.stars;document.getElementById("parentcoins").textContent=data.coins;document.getElementById("parentislands").textContent=Object.keys(data.completed).length;document.getElementById("achievementslist").textContent=data.stars>=10?"🌟 Жұлдыз жинаушы — 10 жұлдыздан көп!":"⭐ Жұлдыздар: "+data.stars+" / 10 — жалғастыра бер!";renderIslands();const bp=document.getElementById("basketProgress");if(bp)bp.textContent=(data.basketDone||0)+"/100 ⭐";}
 function subscriptionInfo(plan){const n=document.getElementById("planNotice");if(n)n.textContent=plan+" таңдалды. Бұл әзірге тарифті көрсету макеті: төлем жасау функциясы әлі қосылмаған."; }
 function show(id){
- ["home","map","game","basketGame","result","parent","achievements","plans"].forEach(x=>{
+ ["home","map","game","basketGame","result","parent","achievements","plans","admin"].forEach(x=>{
    const screen=document.getElementById(x);
    if(screen) screen.classList.toggle("hidden",x!==id);
  });
@@ -866,6 +870,7 @@ function answer(v,btn){
  if(ok){document.getElementById("next").classList.remove("hidden");document.getElementById("next").textContent="Келесі есеп →";}else{document.getElementById("retryQuestion").classList.remove("hidden");}
 }
 function nextQuestion(){
+ if(!zereCanStart())return;
  const solved=data.solved[topicIndex]||[];
  const end=Math.min(Math.floor(qIndex/10)*10+10,topics[topicIndex].qs.length);
  let next=qIndex+1;
