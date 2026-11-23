@@ -479,8 +479,8 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
 <section id="freeLimitGate" role="dialog" aria-modal="true" aria-labelledby="freeLimitTitle">
  <div class="limit-card">
   <div style="font-size:48px">🌈</div>
-  <h2 id="freeLimitTitle">Тегін 10 есеп аяқталды!</h2>
-  <p>Жарайсың! Zere аралдарындағы барлық есепті жалғастыру үшін толық қолжетімділікті ашуға болады.</p>
+  <h2 id="freeLimitTitle">Тегін сынақ аралы аяқталды!</h2>
+  <p>Жарайсың! 12 тегін сынақ есебіті орындадыңыз. Қалған 6 аралды ашу үшін толық қолжетімділікті алуға болады.</p>
   <div class="limit-price">1490 ₸</div>
   <p><b>Бір рет төлеу — өмір бойы қолжетімділік.</b></p>
   <p>Төлемді растағаннан кейін толық нұсқаны ашамыз. Бұл нұсқада төлем автоматты тексерілмейді.</p>
@@ -502,6 +502,10 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
 <section class="welcome-panel"><div class="welcome-copy"><div class="eyebrow">✨ 1-СЫНЫПҚА АРНАЛҒАН ОЙЫН</div><h1>Zere — <span>Математика аралы</span></h1><p>Сәлем, досым! Қай аралға саяхаттаймыз?</p></div>
 <div class="player-editor"><div class="avatar">👧</div><div class="player-edit-fields"><label for="childName">Баланың аты</label><div class="name-row"><input id="childName" maxlength="18" placeholder="Атыңды жаз..." autocomplete="off"><button class="save-name-btn" onclick="savePlayerName()">Сақтау</button></div><small>Атың барлық бетте сақталады</small></div></div></section>
 <section class="island-section">
+<div class="section-heading"><div><h2>🌈 Тегін танысу аралы</h2><p>Барлық тақырыптан 2 есептен · барлығы 12 есеп</p></div></div>
+<div class="island-grid"><button class="island-card" onclick="startTrial()"><span class="island-symbol">🎁</span><strong>Тегін сынақ аралы</strong><small>12 тегін аралас есеп</small><span class="island-progress" id="trialProgress">0/12 ⭐</span></button></div>
+</section>
+<section class="island-section">
 <div class="section-heading"><div><h2>0-сынып</h2><p>Сандармен танысып, санауды үйрен!</p></div></div>
 <div class="island-grid">
 <button class="island-card island-count-card" onclick="chooseLevels(4)"><span class="island-symbol">🔢</span><strong>Санамақ аралы</strong><small>100 тапсырма · 10 кезең</small><span class="island-progress" id="progress4">0/100 ⭐</span></button>
@@ -517,6 +521,16 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
 </div></section>
 <section class="home-bottom"><div class="daily-box"><h3>🌟 Бүгінгі мақсат</h3><p>5 тапсырма орында!</p><div class="track"><i id="dailybar" style="width:0%"></i></div><b id="dailytext">0 / 5 тапсырма</b></div></section>
 <nav class="bottom-nav"><button onclick="show('home')">🏠 Басты бет</button><button onclick="show('achievements')">🏆 Жетістіктер</button><button onclick="show('parent')">📊 Үлгерімім</button><button id="adminNavButton" class="hidden" onclick="show('admin')">🛠 Әкімші</button></nav></main>
+<main id="trialGame" class="hidden">
+<button class="secondary back" onclick="show('home')">← Аралдарға қайту</button>
+<section class="section">
+<div class="gamehead"><div><span class="badge">🌈 ТЕГІН ПРОБНЫЙ АРАЛ</span><h2 id="trialTitle">1 / 12 есеп</h2></div><div class="pill">🎁 Тегін</div></div>
+<div class="track"><i id="trialBar" style="width:8.33%"></i></div>
+<p class="muted" id="trialTopic">Тақырып</p>
+<div class="problem"><div class="equation" id="trialQuestion">Есеп</div><div class="options" id="trialOptions"></div><div id="trialFeedback"></div></div>
+<div class="actions" style="justify-content:center;gap:10px"><button class="primary hidden" id="trialNext" onclick="nextTrial()">Келесі есеп →</button></div>
+<p class="muted" id="trialFootnote">12 есептің барлығын орындап көр!</p>
+</section></main>
 <main id="map" class="hidden stage-screen"><button class="secondary back" onclick="show('home')">← Басты бетке қайту</button><section class="section" id="levelPicker"></section></main>
 <main id="game" class="hidden"><button class="secondary back" onclick="show('map');chooseLevels(topicIndex)">← Кезеңдерге қайту</button><section class="section"><div class="gamehead"><div><span class="badge" id="topicbadge">Сандар аралы</span><h2 id="leveltitle">1-деңгей</h2></div><div class="pill">⭐ <span id="roundstars">0</span>/100</div></div><div class="track"><i id="roundbar" style="width:0%"></i></div><p class="muted" id="instruction">Дұрыс жауапты таңда!</p><div class="problem"><div class="equation" id="equation">2 + 3 = ?</div><div class="options" id="options"></div><div id="feedback"></div></div><div class="hint hidden" id="hint"></div><div class="actions" style="justify-content:center;gap:10px"><button class="secondary hidden" id="retryQuestion" onclick="retryQuestion()">↻ Қайта байқап көр</button><button class="primary hidden" id="next" onclick="nextQuestion()">Келесі есеп →</button></div></section></main>
 <main id="basketGame" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section basket-section"><div class="gamehead"><div><span class="badge">0-СЫНЫП · 🧺 СИҚЫРЛЫ ЖИНАҚ</span><h2 id="basketStage">1-кезең · 1/10</h2></div><div class="pill">⭐ <span id="basketStars">0</span>/100</div></div><div class="track"><i id="basketTrack" style="width:1%"></i></div><div class="basket-task"><div class="basket-target" id="basketTarget">5</div><div class="basket-pictures" id="basketPicture">🍎🍎🍎🍎🍎</div><div class="basket-caption" id="basketCaption">🍎</div></div><div class="basket-play"><div class="basket-items" id="basketItems" aria-label="Жинауға болатын заттар"></div><div class="basket-drop" id="basketDrop"><div class="basket-count" id="basketCount">0 / 5</div><div class="basket-container" id="basketContainer">🧺</div><div class="basket-inside" id="basketInside"></div></div></div><div class="basket-feedback" id="basketFeedback">Заттарды себетке сүйреп сал!</div><div class="actions" style="justify-content:center;gap:10px"><button class="primary" id="basketCheck" onclick="checkBasketTask()">Тексеру ✓</button><button class="primary hidden" id="basketNext" onclick="nextBasketTask()">Келесі тапсырма →</button></div></section></main>
@@ -768,7 +782,7 @@ function zereCompletedCount(){
  return topicCount + Math.min(100,Math.max(0,Number(data.basketDone)||0));
 }
 function zereCanStart(){
- if(zereIsPaid()||zereCompletedCount()<ZERE_FREE_LIMIT)return true;
+ if(zereIsPaid())return true;
  openLimitGate();return false;
 }
 function openLimitGate(){document.getElementById("freeLimitGate")?.classList.add("show");}
@@ -777,6 +791,67 @@ function showPaymentHelp(){
  const el=document.getElementById("paymentHelpText");if(el)el.classList.remove("hidden");
 }
 
+// Тегін сынақ аралы: 5 математика тақырыбынан 2 есептен және себет тақырыбынан 2 санау есебі.
+const zereTrialQuestions = [];
+function buildZereTrialQuestions(){
+ zereTrialQuestions.length=0;
+ topics.forEach((topic,idx)=>{
+  for(let j=0;j<2;j++){
+   const q=topic.qs[j];
+   if(q)zereTrialQuestions.push({topic:topic.name,question:topic.name==="Қарапайым теңдеулер аралы"||topic.name==="Санау аралы"?String(q[0]):String(q[0])+" = ?",answer:q[1],options:q[2]});
+  }
+ });
+ zereTrialQuestions.push(
+  {topic:"Сиқырлы жинақ",question:"🧺 Себетке 3 алма және тағы 2 алма салынды. Барлығы неше алма?",answer:5,options:[4,5,6]},
+  {topic:"Сиқырлы жинақ",question:"🍓 Себетте 6 жидек болды. Оның 2-еуін алдық. Нешеуі қалды?",answer:4,options:[3,4,5]}
+ );
+ // Себетке арналған 2 есепті де тақырыптардың арасына араластырамыз.
+ for(let i=zereTrialQuestions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[zereTrialQuestions[i],zereTrialQuestions[j]]=[zereTrialQuestions[j],zereTrialQuestions[i]];}
+}
+let zereTrialIndex=0;
+function startTrial(){
+ if(!zereTrialQuestions.length)buildZereTrialQuestions();
+ zereTrialIndex=0;
+ renderTrialQuestion();
+ show("trialGame");
+}
+function renderTrialQuestion(){
+ const q=zereTrialQuestions[zereTrialIndex];
+ document.getElementById("trialTitle").textContent=(zereTrialIndex+1)+" / 12 есеп";
+ document.getElementById("trialBar").style.width=((zereTrialIndex+1)/12*100)+"%";
+ document.getElementById("trialTopic").textContent="Тақырып: "+q.topic;
+ document.getElementById("trialQuestion").textContent=q.question;
+ document.getElementById("trialFeedback").textContent="";
+ document.getElementById("trialNext").classList.add("hidden");
+ document.getElementById("trialOptions").innerHTML=q.options.map(v=>`<button class="option" onclick="answerTrial(${JSON.stringify(v).replace(/"/g,'&quot;')},this)">${v}</button>`).join("");
+}
+function answerTrial(value,btn){
+ const q=zereTrialQuestions[zereTrialIndex];
+ document.querySelectorAll("#trialOptions .option").forEach(b=>{b.disabled=true;if(String(b.textContent)===String(q.answer))b.classList.add("correct");});
+ if(String(value)===String(q.answer)){
+  document.getElementById("trialFeedback").innerHTML='<div class="feedback">🎉 Дұрыс! Жарайсың!</div>';
+  document.getElementById("trialNext").classList.remove("hidden");
+ }else{
+  btn.classList.add("wrong");
+  document.getElementById("trialFeedback").innerHTML='<div class="feedback bad">Қайта байқап көр! Дұрыс жауапты таңда.</div>';
+  document.querySelectorAll("#trialOptions .option").forEach(b=>{if(String(b.textContent)===String(q.answer))b.disabled=false;});
+ }
+}
+function nextTrial(){
+ zereTrialIndex++;
+ if(zereTrialIndex>=12){
+  document.getElementById("trialTitle").textContent="12 / 12 — аяқталды!";
+  document.getElementById("trialBar").style.width="100%";
+  document.getElementById("trialTopic").textContent="Тегін сынақ аралы аяқталды. Толық 6 аралды ашу үшін 1490 ₸ төлем жасаңыз.";
+  document.getElementById("trialQuestion").textContent="🌈 Жарайсың! Барлық 12 есепті орындадың!";
+  document.getElementById("trialOptions").innerHTML="";
+  document.getElementById("trialFeedback").textContent="";
+  document.getElementById("trialNext").classList.add("hidden");
+  openLimitGate();
+  return;
+ }
+ renderTrialQuestion();
+}
 function savePlayerName(){
  const field=document.getElementById("childName");
  const value=(field.value||"").trim();
@@ -796,7 +871,7 @@ function save(){try{localStorage.setItem("mathWorldSave",JSON.stringify(data));}
 function refresh(){document.getElementById("stars").textContent=data.stars;document.getElementById("coins").textContent=data.coins;document.getElementById("dailybar").style.width=Math.min(100,data.daily/5*100)+"%";document.getElementById("dailytext").textContent=Math.min(data.daily,5)+" / 5 тапсырма";document.getElementById("parentdone").textContent=data.done;document.getElementById("parentstars").textContent=data.stars;document.getElementById("parentcoins").textContent=data.coins;document.getElementById("parentislands").textContent=Object.keys(data.completed).length;document.getElementById("achievementslist").textContent=data.stars>=10?"🌟 Жұлдыз жинаушы — 10 жұлдыздан көп!":"⭐ Жұлдыздар: "+data.stars+" / 10 — жалғастыра бер!";renderIslands();const bp=document.getElementById("basketProgress");if(bp)bp.textContent=(data.basketDone||0)+"/100 ⭐";}
 function subscriptionInfo(plan){const n=document.getElementById("planNotice");if(n)n.textContent=plan+" таңдалды. Бұл әзірге тарифті көрсету макеті: төлем жасау функциясы әлі қосылмаған."; }
 function show(id){
- ["home","map","game","basketGame","result","parent","achievements","plans","admin"].forEach(x=>{
+ ["home","map","game","basketGame","result","parent","achievements","plans","admin","trialGame"].forEach(x=>{
    const screen=document.getElementById(x);
    if(screen) screen.classList.toggle("hidden",x!==id);
  });
@@ -940,7 +1015,7 @@ function checkBasketTask(){
 function completeBasketTask(){if(!zereIsPaid() && zereCompletedCount()>=ZERE_FREE_LIMIT){openLimitGate();return;}playAnswerSound(true);document.getElementById("basketCheck").classList.add("hidden");data.basketDone=Math.max(Number(data.basketDone)||0,basketIndex+1);data.done++;data.stars++;data.coins+=2;data.daily++;save();document.getElementById("basketStars").textContent=data.basketDone;document.getElementById("basketFeedback").className="basket-feedback good";document.getElementById("basketFeedback").textContent=basketTarget+" зат жиналды! ⭐";document.getElementById("basketNext").classList.remove("hidden");document.getElementById("basketNext").textContent=basketIndex>=99?"Қайталау →":"Келесі тапсырма →";}
 function nextBasketTask(){if(basketIndex>=99){basketIndex=0;data.basketDone=0;}else basketIndex++;renderBasketTask();}
 
-refresh();refreshPlayer();show("home");
+buildZereTrialQuestions();refresh();refreshPlayer();show("home");
 // Keep the game hidden until the email account has an authenticated Supabase session.
 initZereAuth().catch(err=>setAuthStatus("Тіркелу ашылмады: "+(err.message||err),"error"));
 
