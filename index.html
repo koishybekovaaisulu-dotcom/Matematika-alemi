@@ -776,6 +776,7 @@ function renderIslands(){
  topics.forEach((t,i)=>{const el=document.getElementById("progress"+i);if(el){const n=(data.solved[i]||[]).length;el.textContent=n+"/"+t.qs.length+" ⭐";}});
 }
 function chooseLevels(i){
+ if(!zereCanStart())return;
  topicIndex=i;show("map");
  const p=document.getElementById("levelPicker");
  p.innerHTML=`<h2>${topics[i].name}</h2><p class="muted">Тек осы аралдың есептері. 10 кезең, әр кезеңде 10 есептен.</p><div class="stage-grid">${Array.from({length:Math.ceil(topics[i].qs.length/10)},(_,k)=>{
@@ -788,6 +789,7 @@ function chooseLevels(i){
  window.scrollTo({top:0,behavior:"smooth"});
 }
 function startTopic(i,start=0){
+ if(!zereCanStart())return;
  topicIndex=i;const solved=data.solved[i]||[];
  const end=Math.min(start+10,topics[i].qs.length);
  qIndex=start;
