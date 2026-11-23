@@ -516,12 +516,13 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
 <button class="island-card island-equation-card" onclick="chooseLevels(3)"><span class="island-symbol">x =</span><strong>Теңдеулер аралы</strong><small>100 есеп · 10 кезең</small><span class="island-progress" id="progress3">0/100 ⭐</span></button>
 </div></section>
 <section class="home-bottom"><div class="daily-box"><h3>🌟 Бүгінгі мақсат</h3><p>5 тапсырма орында!</p><div class="track"><i id="dailybar" style="width:0%"></i></div><b id="dailytext">0 / 5 тапсырма</b></div></section>
-<nav class="bottom-nav"><button onclick="show('home')">🏠 Басты бет</button><button onclick="show('achievements')">🏆 Жетістіктер</button><button onclick="show('parent')">📊 Үлгерімім</button></nav></main>
+<nav class="bottom-nav"><button onclick="show('home')">🏠 Басты бет</button><button onclick="show('achievements')">🏆 Жетістіктер</button><button onclick="show('parent')">📊 Үлгерімім</button><button id="adminNavButton" class="hidden" onclick="show('admin')">🛠 Әкімші</button></nav></main>
 <main id="map" class="hidden stage-screen"><button class="secondary back" onclick="show('home')">← Басты бетке қайту</button><section class="section" id="levelPicker"></section></main>
 <main id="game" class="hidden"><button class="secondary back" onclick="show('map');chooseLevels(topicIndex)">← Кезеңдерге қайту</button><section class="section"><div class="gamehead"><div><span class="badge" id="topicbadge">Сандар аралы</span><h2 id="leveltitle">1-деңгей</h2></div><div class="pill">⭐ <span id="roundstars">0</span>/100</div></div><div class="track"><i id="roundbar" style="width:0%"></i></div><p class="muted" id="instruction">Дұрыс жауапты таңда!</p><div class="problem"><div class="equation" id="equation">2 + 3 = ?</div><div class="options" id="options"></div><div id="feedback"></div></div><div class="hint hidden" id="hint"></div><div class="actions" style="justify-content:center;gap:10px"><button class="secondary hidden" id="retryQuestion" onclick="retryQuestion()">↻ Қайта байқап көр</button><button class="primary hidden" id="next" onclick="nextQuestion()">Келесі есеп →</button></div></section></main>
 <main id="basketGame" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section basket-section"><div class="gamehead"><div><span class="badge">0-СЫНЫП · 🧺 СИҚЫРЛЫ ЖИНАҚ</span><h2 id="basketStage">1-кезең · 1/10</h2></div><div class="pill">⭐ <span id="basketStars">0</span>/100</div></div><div class="track"><i id="basketTrack" style="width:1%"></i></div><div class="basket-task"><div class="basket-target" id="basketTarget">5</div><div class="basket-pictures" id="basketPicture">🍎🍎🍎🍎🍎</div><div class="basket-caption" id="basketCaption">🍎</div></div><div class="basket-play"><div class="basket-items" id="basketItems" aria-label="Жинауға болатын заттар"></div><div class="basket-drop" id="basketDrop"><div class="basket-count" id="basketCount">0 / 5</div><div class="basket-container" id="basketContainer">🧺</div><div class="basket-inside" id="basketInside"></div></div></div><div class="basket-feedback" id="basketFeedback">Заттарды себетке сүйреп сал!</div><div class="actions" style="justify-content:center;gap:10px"><button class="primary" id="basketCheck" onclick="checkBasketTask()">Тексеру ✓</button><button class="primary hidden" id="basketNext" onclick="nextBasketTask()">Келесі тапсырма →</button></div></section></main>
 <main id="result" class="hidden"><section class="section" style="text-align:center"><div style="font-size:70px">🏆</div><h1>Жарайсың!</h1><h2 id="resultscore">10/10</h2><p id="resulttext">Сен керемет жұмыс жасадың!</p><div class="actions" style="justify-content:center"><button class="primary" onclick="show('map')">Картаға оралу</button><button class="secondary" onclick="replay()">Қайта ойнау</button></div></section></main>
 <main id="parent" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section"><h2>👨‍👩‍👧 Ата-ана кабинеті</h2><p class="muted">Бұл демо-нұсқадағы үлгерім осы құрылғыда сақталады.</p><div class="parentrow"><span>Орындалған тапсырмалар</span><b id="parentdone">0</b></div><div class="parentrow"><span>Жиналған жұлдыздар</span><b id="parentstars">0</b></div><div class="parentrow"><span>Жиналған монеталар</span><b id="parentcoins">0</b></div><div class="parentrow"><span>Аяқталған аралдар</span><b id="parentislands">0</b></div><p class="muted">Кеңес: баламен күніне 10–15 минут ойнау жеткілікті. Нәтижені мадақтап, қателесуге мүмкіндік беріңіз.</p></section></main>
+<main id="admin" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section"><h2>🛠 Zere әкімші кабинеті</h2><p class="muted">Түбіртекті Kaspi-ден тексерген соң ата-ананың сайтқа тіркелген email-ын енгізіңіз. Қолжетімділік өмір бойына ашылады.</p><label for="adminParentEmail">Ата-ананың email мекенжайы</label><input id="adminParentEmail" type="email" placeholder="ata-ana@gmail.com" autocomplete="email"><button class="primary" id="adminGrantButton" onclick="adminGrantAccess()">1490 ₸ төлем расталды — қолжетімділікті ашу</button><p id="adminStatus" role="status" aria-live="polite"></p><hr><h3>Төлемді тексеру тәртібі</h3><p>1. Kaspi төлемінің түбіртегін тексеріңіз.</p><p>2. Email сайттағы тіркелген email-мен дәл сәйкес болсын.</p><p>3. Жоғарыдағы батырманы бір рет басыңыз.</p><p class="muted">Қате email енгізілсе, жүйе қолжетімділік бермейді. Төлем автоматты тексерілмейді.</p></section></main>
 <main id="achievements" class="hidden"><button class="secondary back" onclick="show('home')">← Басты бет</button><section class="section"><h2>🏅 Жетістіктер</h2><p id="achievementslist">Алғашқы жұлдызыңды жина!</p></section></main>
 <footer class="footer">Zere — Математика аралы · Оқу — қызықты саяхат! 🌈</footer>
 </div>
@@ -537,11 +538,25 @@ function setAuthStatus(message,kind=""){
  const el=document.getElementById("authStatus");if(!el)return;
  el.textContent=message;el.className=kind;
 }
-function unlockZere(user){
+let zereCurrentUser=null;
+let zereAdminActive=false;
+let zerePaidActive=false;
+async function refreshZereAccountFlags(){
+ if(!zereSupabase||!zereCurrentUser)return;
+ const {data:adminRows,error:adminError}=await zereSupabase.from("zere_admins").select("user_id").eq("user_id",zereCurrentUser.id).limit(1);
+ if(!adminError)zereAdminActive=!!(adminRows&&adminRows.length);
+ const {data:paidRows,error:paidError}=await zereSupabase.from("zere_access").select("user_id").eq("user_id",zereCurrentUser.id).limit(1);
+ if(!paidError)zerePaidActive=!!(paidRows&&paidRows.length);
+ const adminButton=document.getElementById("adminNavButton");
+ if(adminButton)adminButton.classList.toggle("hidden",!zereAdminActive);
+}
+async function unlockZere(user){
  if(!user)return;
+ zereCurrentUser=user;
  zereAuthReady=true;document.body.classList.add("auth-ready");
  const gate=document.getElementById("authGate");if(gate)gate.style.display="none";
  try{localStorage.setItem("zereSignedInEmail",user.email||"");}catch(e){}
+ await refreshZereAccountFlags();
 }
 async function initZereAuth(){
  const form=document.getElementById("authForm");
@@ -549,7 +564,7 @@ async function initZereAuth(){
  zereSupabase=window.supabase.createClient(ZERE_SUPABASE_URL,ZERE_SUPABASE_ANON_KEY);
  const {data:{session}}=await zereSupabase.auth.getSession();
  if(session?.user){unlockZere(session.user);return;}
- zereSupabase.auth.onAuthStateChange((_event,newSession)=>{if(newSession?.user)unlockZere(newSession.user);});
+ zereSupabase.auth.onAuthStateChange((_event,newSession)=>{if(newSession?.user)unlockZere(newSession.user);else{zereCurrentUser=null;zerePaidActive=false;zereAdminActive=false;}});
  form.addEventListener("submit",async(e)=>{
   e.preventDefault();
   const email=document.getElementById("authEmail").value.trim();
@@ -725,7 +740,24 @@ function zereAccountKey(){
  return "zereLifetimePaid:"+email;
 }
 function zereIsPaid(){
- try{return localStorage.getItem(zereAccountKey())==="true";}catch(e){return false;}
+ return zerePaidActive;
+}
+async function adminGrantAccess(){
+ const input=document.getElementById("adminParentEmail");
+ const button=document.getElementById("adminGrantButton");
+ const status=document.getElementById("adminStatus");
+ const email=(input?.value||"").trim().toLowerCase();
+ if(!email||!email.includes("@")){status.textContent="Дұрыс email мекенжайын енгізіңіз.";return;}
+ if(!zereAdminActive){status.textContent="Әкімші рұқсаты табылмады. Өз әкімші аккаунтыңызбен кіргеніңізді тексеріңіз.";return;}
+ button.disabled=true;button.textContent="Тексерілуде…";status.textContent="Аккаунт ізделіп жатыр…";
+ try{
+  const {data,error}=await zereSupabase.rpc("zere_admin_grant_access",{target_email:email});
+  if(error)throw error;
+  status.textContent="Дайын! "+email+" аккаунтына өмір бойғы толық қолжетімділік ашылды.";
+  input.value="";
+ }catch(err){
+  status.textContent="Қате: "+(err.message||"Операция орындалмады")+". SQL функциясының орнатылғанын және email дұрыс екенін тексеріңіз.";
+ }finally{button.disabled=false;button.textContent="1490 ₸ төлем расталды — қолжетімділікті ашу";}
 }
 function zereCompletedCount(){
  const topicCount=Object.values(data.solved||{}).reduce((sum,arr)=>sum+(Array.isArray(arr)?new Set(arr).size:0),0);
