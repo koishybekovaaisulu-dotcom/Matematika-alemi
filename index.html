@@ -480,7 +480,7 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
  <div class="limit-card">
   <div style="font-size:48px">🌈</div>
   <h2 id="freeLimitTitle">Тегін сынақ аралы аяқталды!</h2>
-  <p>Жарайсың! 12 тегін сынақ есебіті орындадыңыз. Қалған 6 аралды ашу үшін толық қолжетімділікті алуға болады.</p>
+  <p>Жарайсың! 12 тегін сынақ есебін орындадыңыз. Қалған 6 аралды ашу үшін толық қолжетімділікті алуға болады.</p>
   <div class="limit-price">1490 ₸</div>
   <p><b>Бір рет төлеу — өмір бойы қолжетімділік.</b></p>
   <p>Төлемді растағаннан кейін толық нұсқаны ашамыз. Бұл нұсқада төлем автоматты тексерілмейді.</p>
@@ -502,7 +502,7 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
 <section class="welcome-panel"><div class="welcome-copy"><div class="eyebrow">✨ 1-СЫНЫПҚА АРНАЛҒАН ОЙЫН</div><h1>Zere — <span>Математика аралы</span></h1><p>Сәлем, досым! Қай аралға саяхаттаймыз?</p></div>
 <div class="player-editor"><div class="avatar">👧</div><div class="player-edit-fields"><label for="childName">Баланың аты</label><div class="name-row"><input id="childName" maxlength="18" placeholder="Атыңды жаз..." autocomplete="off"><button class="save-name-btn" onclick="savePlayerName()">Сақтау</button></div><small>Атың барлық бетте сақталады</small></div></div></section>
 <section class="island-section">
-<div class="section-heading"><div><h2>🌈 Тегін танысу аралы</h2><p>Барлық тақырыптан 2 есептен · барлығы 12 есеп</p></div></div>
+<div class="section-heading"><div><h2>🌈 Тегін сынақ аралы</h2><p>Барлық тақырыптан 2 есептен · барлығы 12 есеп</p></div></div>
 <div class="island-grid"><button class="island-card" onclick="startTrial()"><span class="island-symbol">🎁</span><strong>Тегін сынақ аралы</strong><small>12 тегін аралас есеп</small><span class="island-progress" id="trialProgress">0/12 ⭐</span></button></div>
 </section>
 <section class="island-section">
@@ -524,7 +524,7 @@ body:not(.auth-ready) .wrap>header,body:not(.auth-ready) .wrap>main,body:not(.au
 <main id="trialGame" class="hidden">
 <button class="secondary back" onclick="show('home')">← Аралдарға қайту</button>
 <section class="section">
-<div class="gamehead"><div><span class="badge">🌈 ТЕГІН ПРОБНЫЙ АРАЛ</span><h2 id="trialTitle">1 / 12 есеп</h2></div><div class="pill">🎁 Тегін</div></div>
+<div class="gamehead"><div><span class="badge">🌈 ТЕГІН СЫНАҚ АРАЛЫ</span><h2 id="trialTitle">1 / 12 есеп</h2></div><div class="pill">🎁 Тегін</div></div>
 <div class="track"><i id="trialBar" style="width:8.33%"></i></div>
 <p class="muted" id="trialTopic">Тақырып</p>
 <div class="problem"><div class="equation" id="trialQuestion">Есеп</div><div class="options" id="trialOptions"></div><div id="trialFeedback"></div></div>
@@ -748,7 +748,7 @@ async function playAnswerSound(isCorrect){
 }
 
 
-const ZERE_FREE_LIMIT = 10;
+const ZERE_FREE_LIMIT = 12;
 function zereAccountKey(){
  const email=(localStorage.getItem("zereSignedInEmail")||"guest").trim().toLowerCase();
  return "zereLifetimePaid:"+email;
